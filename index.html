@@ -19,6 +19,89 @@
             overflow-x: auto;
         }
 
+        /* Audio Controls */
+        .audio-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(0,0,0,0.7);
+            padding: 10px;
+            border-radius: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .audio-btn {
+            background: #FFCC00;
+            color: black;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .audio-btn:hover {
+            background: #FFD700;
+            transform: scale(1.05);
+        }
+
+        .audio-btn.muted {
+            background: #666;
+            color: white;
+        }
+
+        .volume-slider {
+            width: 80px;
+            height: 5px;
+            background: #333;
+            border-radius: 5px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            background: #FFCC00;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .pulse-animation {
+            animation: pulse 0.6s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .correct-flash {
+            animation: correctFlash 1s ease-in-out;
+        }
+
+        @keyframes correctFlash {
+            0% { background-color: rgba(0,255,0,0); }
+            50% { background-color: rgba(0,255,0,0.3); }
+            100% { background-color: rgba(0,255,0,0); }
+        }
+
+        .incorrect-flash {
+            animation: incorrectFlash 1s ease-in-out;
+        }
+
+        @keyframes incorrectFlash {
+            0% { background-color: rgba(255,0,0,0); }
+            50% { background-color: rgba(255,0,0,0.3); }
+            100% { background-color: rgba(255,0,0,0); }
+        }
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -340,6 +423,42 @@
 </head>
 <body>
     <div class="container">
+        <!-- Audio Controls -->
+        <div class="audio-controls">
+            <button class="audio-btn" id="music-toggle">🎵 Music</button>
+            <button class="audio-btn" id="sfx-toggle">🔊 SFX</button>
+            <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="50">
+            <span style="font-size: 0.8em; color: white;">Vol</span>
+        </div>
+
+        <!-- Hidden Audio Elements -->
+        <audio id="theme-music" loop>
+            <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBkOa2e+3dCUB" type="audio/wav">
+        </audio>
+
+        <audio id="question-select">
+            <source src="data:audio/wav;base64,UklGRpYBAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YXIBAADCw8PDxMLCwkRFRERFREQBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQE=" type="audio/wav">
+        </audio>
+
+        <audio id="correct-sound">
+            <source src="data:audio/wav;base64,UklGRlwBAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YTgBAABjZGNkY2RjZJiZmJmYmZiZ/v7+/v7+/v7+AP8A/wD/AP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=" type="audio/wav">
+        </audio>
+
+        <audio id="incorrect-sound">
+            <source src="data:audio/wav;base64,UklGRhwBAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YfgAAACRkZGRkZGRkR8fHx8fHx8fAgICAgICAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=" type="audio/wav">
+        </audio>
+
+        <audio id="final-jeopardy-music" loop>
+            <source src="data:audio/wav;base64,UklGRmoBAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YUYBAAAxMTExMTExMf7+/v7+/v7+MjIyMjIyMjL9/f39/f39/TMzMzMzMzMz/Pz8/Pz8/Pz0AAAA9PT09PT09PT19fX19fX19fQAAAD09PT09PT09PT19fX19fX19fQAAAD09PT09PT09PT19fX19fX19fQAAAD09PT09PT09PT19fX19fX19fQAAAD09PT09PT09PT19fX19fX19fQAAAD09PT09PT09A==" type="audio/wav">
+        </audio>
+
+        <audio id="buzzer-sound">
+            <source src="data:audio/wav;base64,UklGRqYBAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YYIBAACoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKio=" type="audio/wav">
+        </audio>
+
+        <audio id="applause-sound">
+            <source src="data:audio/wav;base64,UklGRvYBAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YdIBAAD+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+" type="audio/wav">
+        </audio>
         <!-- Main Menu Screen -->
         <div id="main-menu-screen" class="screen active">
             <div class="setup-container">
@@ -776,6 +895,131 @@
         const playerColors = [
             '#FF6464', '#64FF64', '#6464FF', '#FFFF64', '#FF64FF'
         ];
+
+        // Audio Management
+        class AudioManager {
+            constructor() {
+                this.musicEnabled = true;
+                this.sfxEnabled = true;
+                this.volume = 0.5;
+                
+                this.themeMusic = document.getElementById('theme-music');
+                this.questionSelect = document.getElementById('question-select');
+                this.correctSound = document.getElementById('correct-sound');
+                this.incorrectSound = document.getElementById('incorrect-sound');
+                this.finalJeopardyMusic = document.getElementById('final-jeopardy-music');
+                this.buzzerSound = document.getElementById('buzzer-sound');
+                this.applauseSound = document.getElementById('applause-sound');
+                
+                this.setVolume(this.volume);
+                this.setupControls();
+            }
+            
+            setupControls() {
+                const musicToggle = document.getElementById('music-toggle');
+                const sfxToggle = document.getElementById('sfx-toggle');
+                const volumeSlider = document.getElementById('volume-slider');
+                
+                musicToggle.addEventListener('click', () => this.toggleMusic());
+                sfxToggle.addEventListener('click', () => this.toggleSFX());
+                volumeSlider.addEventListener('input', (e) => this.setVolume(e.target.value / 100));
+            }
+            
+            toggleMusic() {
+                this.musicEnabled = !this.musicEnabled;
+                const btn = document.getElementById('music-toggle');
+                
+                if (this.musicEnabled) {
+                    btn.classList.remove('muted');
+                    btn.textContent = '🎵 Music';
+                } else {
+                    btn.classList.add('muted');
+                    btn.textContent = '🔇 Music';
+                    this.stopMusic();
+                }
+            }
+            
+            toggleSFX() {
+                this.sfxEnabled = !this.sfxEnabled;
+                const btn = document.getElementById('sfx-toggle');
+                
+                if (this.sfxEnabled) {
+                    btn.classList.remove('muted');
+                    btn.textContent = '🔊 SFX';
+                } else {
+                    btn.classList.add('muted');
+                    btn.textContent = '🔇 SFX';
+                }
+            }
+            
+            setVolume(volume) {
+                this.volume = volume;
+                const allAudio = [this.themeMusic, this.questionSelect, this.correctSound, 
+                                this.incorrectSound, this.finalJeopardyMusic, this.buzzerSound, this.applauseSound];
+                
+                allAudio.forEach(audio => {
+                    if (audio) audio.volume = volume;
+                });
+            }
+            
+            playThemeMusic() {
+                if (this.musicEnabled && this.themeMusic) {
+                    this.themeMusic.currentTime = 0;
+                    this.themeMusic.play().catch(() => {});
+                }
+            }
+            
+            stopMusic() {
+                if (this.themeMusic) this.themeMusic.pause();
+                if (this.finalJeopardyMusic) this.finalJeopardyMusic.pause();
+            }
+            
+            playQuestionSelect() {
+                if (this.sfxEnabled && this.questionSelect) {
+                    this.questionSelect.currentTime = 0;
+                    this.questionSelect.play().catch(() => {});
+                }
+            }
+            
+            playCorrect() {
+                if (this.sfxEnabled && this.correctSound) {
+                    this.correctSound.currentTime = 0;
+                    this.correctSound.play().catch(() => {});
+                }
+            }
+            
+            playIncorrect() {
+                if (this.sfxEnabled && this.incorrectSound) {
+                    this.incorrectSound.currentTime = 0;
+                    this.incorrectSound.play().catch(() => {});
+                }
+            }
+            
+            playFinalJeopardy() {
+                if (this.musicEnabled && this.finalJeopardyMusic) {
+                    this.stopMusic();
+                    this.finalJeopardyMusic.currentTime = 0;
+                    this.finalJeopardyMusic.play().catch(() => {});
+                }
+            }
+            
+            playBuzzer() {
+                if (this.sfxEnabled && this.buzzerSound) {
+                    this.buzzerSound.currentTime = 0;
+                    this.buzzerSound.play().catch(() => {});
+                }
+            }
+            
+            playApplause() {
+                if (this.sfxEnabled && this.applauseSound) {
+                    this.applauseSound.currentTime = 0;
+                    this.applauseSound.play().catch(() => {});
+                }
+            }
+        }
+
+        // Initialize audio manager
+        let audioManager;
 
         // Event Listeners
         document.addEventListener('DOMContentLoaded', function() {
