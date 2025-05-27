@@ -432,32 +432,32 @@
         </div>
 
         <!-- Hidden Audio Elements -->
-        <audio id="theme-music" loop>
-            <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBkOa2e+3dCUB" type="audio/wav">
+        <audio id="theme-music" loop preload="auto">
+            <!-- Using simple synthesized tones that work better in browsers -->
         </audio>
 
-        <audio id="question-select">
-            <source src="data:audio/wav;base64,UklGRpYBAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YXIBAADCw8PDxMLCwkRFRERFREQBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQE=" type="audio/wav">
+        <audio id="question-select" preload="auto">
+            <!-- Simple click sound -->
         </audio>
 
-        <audio id="correct-sound">
-            <source src="data:audio/wav;base64,UklGRlwBAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YTgBAABjZGNkY2RjZJiZmJmYmZiZ/v7+/v7+/v7+AP8A/wD/AP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=" type="audio/wav">
+        <audio id="correct-sound" preload="auto">
+            <!-- Success chime -->
         </audio>
 
-        <audio id="incorrect-sound">
-            <source src="data:audio/wav;base64,UklGRhwBAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YfgAAACRkZGRkZGRkR8fHx8fHx8fAgICAgICAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=" type="audio/wav">
+        <audio id="incorrect-sound" preload="auto">
+            <!-- Buzzer sound -->
         </audio>
 
-        <audio id="final-jeopardy-music" loop>
-            <source src="data:audio/wav;base64,UklGRmoBAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YUYBAAAxMTExMTExMf7+/v7+/v7+MjIyMjIyMjL9/f39/f39/TMzMzMzMzMz/Pz8/Pz8/Pz0AAAA9PT09PT09PT19fX19fX19fQAAAD09PT09PT09PT19fX19fX19fQAAAD09PT09PT09PT19fX19fX19fQAAAD09PT09PT09PT19fX19fX19fQAAAD09PT09PT09PT19fX19fX19fQAAAD09PT09PT09A==" type="audio/wav">
+        <audio id="final-jeopardy-music" loop preload="auto">
+            <!-- Thinking music -->
         </audio>
 
-        <audio id="buzzer-sound">
-            <source src="data:audio/wav;base64,UklGRqYBAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YYIBAACoqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKio=" type="audio/wav">
+        <audio id="buzzer-sound" preload="auto">
+            <!-- Wrong answer buzzer -->
         </audio>
 
-        <audio id="applause-sound">
-            <source src="data:audio/wav;base64,UklGRvYBAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YdIBAAD+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+" type="audio/wav">
+        <audio id="applause-sound" preload="auto">
+            <!-- Celebration sound -->
         </audio>
         <!-- Main Menu Screen -->
         <div id="main-menu-screen" class="screen active">
@@ -896,23 +896,28 @@
             '#FF6464', '#64FF64', '#6464FF', '#FFFF64', '#FF64FF'
         ];
 
-        // Audio Management
+        // Audio Management with Web Audio API
         class AudioManager {
             constructor() {
                 this.musicEnabled = true;
                 this.sfxEnabled = true;
                 this.volume = 0.5;
+                this.audioContext = null;
+                this.isInitialized = false;
                 
-                this.themeMusic = document.getElementById('theme-music');
-                this.questionSelect = document.getElementById('question-select');
-                this.correctSound = document.getElementById('correct-sound');
-                this.incorrectSound = document.getElementById('incorrect-sound');
-                this.finalJeopardyMusic = document.getElementById('final-jeopardy-music');
-                this.buzzerSound = document.getElementById('buzzer-sound');
-                this.applauseSound = document.getElementById('applause-sound');
-                
-                this.setVolume(this.volume);
                 this.setupControls();
+            }
+            
+            async initializeAudio() {
+                if (this.isInitialized) return;
+                
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    this.isInitialized = true;
+                    console.log('Audio initialized successfully!');
+                } catch (error) {
+                    console.warn('Audio initialization failed:', error);
+                }
             }
             
             setupControls() {
@@ -935,7 +940,6 @@
                 } else {
                     btn.classList.add('muted');
                     btn.textContent = '🔇 Music';
-                    this.stopMusic();
                 }
             }
             
@@ -954,67 +958,122 @@
             
             setVolume(volume) {
                 this.volume = volume;
-                const allAudio = [this.themeMusic, this.questionSelect, this.correctSound, 
-                                this.incorrectSound, this.finalJeopardyMusic, this.buzzerSound, this.applauseSound];
+            }
+            
+            // Generate sounds using Web Audio API
+            playTone(frequency, duration, type = 'sine') {
+                if (!this.sfxEnabled || !this.audioContext) return;
                 
-                allAudio.forEach(audio => {
-                    if (audio) audio.volume = volume;
+                try {
+                    const oscillator = this.audioContext.createOscillator();
+                    const gainNode = this.audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(this.audioContext.destination);
+                    
+                    oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+                    oscillator.type = type;
+                    
+                    gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(this.volume * 0.3, this.audioContext.currentTime + 0.01);
+                    gainNode.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + duration);
+                    
+                    oscillator.start(this.audioContext.currentTime);
+                    oscillator.stop(this.audioContext.currentTime + duration);
+                } catch (error) {
+                    console.warn('Could not play tone:', error);
+                }
+            }
+            
+            playChord(frequencies, duration) {
+                if (!this.sfxEnabled || !this.audioContext) return;
+                
+                frequencies.forEach(freq => {
+                    this.playTone(freq, duration);
                 });
             }
             
-            playThemeMusic() {
-                if (this.musicEnabled && this.themeMusic) {
-                    this.themeMusic.currentTime = 0;
-                    this.themeMusic.play().catch(() => {});
-                }
+            async playThemeMusic() {
+                if (!this.musicEnabled) return;
+                await this.initializeAudio();
+                
+                // Simple background "music" using repeating tones
+                const playMelody = () => {
+                    if (!this.musicEnabled || !this.audioContext) return;
+                    
+                    const notes = [261.63, 293.66, 329.63, 349.23, 392.00]; // C, D, E, F, G
+                    notes.forEach((note, index) => {
+                        setTimeout(() => {
+                            this.playTone(note, 0.5);
+                        }, index * 600);
+                    });
+                    
+                    // Repeat melody
+                    setTimeout(playMelody, 4000);
+                };
+                
+                playMelody();
             }
             
             stopMusic() {
-                if (this.themeMusic) this.themeMusic.pause();
-                if (this.finalJeopardyMusic) this.finalJeopardyMusic.pause();
+                // For our simple system, we just disable music
+                // In a more complex system, we'd track and stop active oscillators
             }
             
-            playQuestionSelect() {
-                if (this.sfxEnabled && this.questionSelect) {
-                    this.questionSelect.currentTime = 0;
-                    this.questionSelect.play().catch(() => {});
-                }
+            async playQuestionSelect() {
+                await this.initializeAudio();
+                this.playTone(800, 0.1);
             }
             
-            playCorrect() {
-                if (this.sfxEnabled && this.correctSound) {
-                    this.correctSound.currentTime = 0;
-                    this.correctSound.play().catch(() => {});
-                }
+            async playCorrect() {
+                await this.initializeAudio();
+                // Happy ascending chord
+                this.playChord([261.63, 329.63, 392.00], 0.5); // C-E-G major chord
             }
             
-            playIncorrect() {
-                if (this.sfxEnabled && this.incorrectSound) {
-                    this.incorrectSound.currentTime = 0;
-                    this.incorrectSound.play().catch(() => {});
-                }
+            async playIncorrect() {
+                await this.initializeAudio();
+                // Descending buzzer sound
+                setTimeout(() => this.playTone(200, 0.3, 'square'), 0);
+                setTimeout(() => this.playTone(150, 0.3, 'square'), 100);
+                setTimeout(() => this.playTone(100, 0.5, 'square'), 200);
             }
             
-            playFinalJeopardy() {
-                if (this.musicEnabled && this.finalJeopardyMusic) {
-                    this.stopMusic();
-                    this.finalJeopardyMusic.currentTime = 0;
-                    this.finalJeopardyMusic.play().catch(() => {});
-                }
+            async playFinalJeopardy() {
+                await this.initializeAudio();
+                if (!this.musicEnabled) return;
+                
+                // Dramatic thinking music pattern
+                const playDramaticMusic = () => {
+                    if (!this.musicEnabled || !this.audioContext) return;
+                    
+                    const pattern = [220, 220, 220, 196, 220, 220, 220, 196];
+                    pattern.forEach((note, index) => {
+                        setTimeout(() => {
+                            this.playTone(note, 0.4);
+                        }, index * 500);
+                    });
+                    
+                    setTimeout(playDramaticMusic, 4500);
+                };
+                
+                playDramaticMusic();
             }
             
-            playBuzzer() {
-                if (this.sfxEnabled && this.buzzerSound) {
-                    this.buzzerSound.currentTime = 0;
-                    this.buzzerSound.play().catch(() => {});
-                }
+            async playBuzzer() {
+                await this.initializeAudio();
+                this.playTone(150, 0.8, 'square');
             }
             
-            playApplause() {
-                if (this.sfxEnabled && this.applauseSound) {
-                    this.applauseSound.currentTime = 0;
-                    this.applauseSound.play().catch(() => {});
-                }
+            async playApplause() {
+                await this.initializeAudio();
+                // Celebratory ascending notes
+                const celebration = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                celebration.forEach((note, index) => {
+                    setTimeout(() => {
+                        this.playTone(note, 0.3);
+                    }, index * 150);
+                });
             }
         }
 
