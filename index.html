@@ -406,6 +406,89 @@
             display: none !important;
         }
 
+        /* New styles for game management */
+        .saved-games-list {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .saved-game-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .saved-game-item:hover {
+            background: rgba(255,204,0,0.3);
+        }
+
+        .saved-game-item.selected {
+            background: rgba(255,204,0,0.5);
+        }
+
+        .game-info {
+            flex: 1;
+            text-align: left;
+        }
+
+        .game-title {
+            font-weight: bold;
+            color: #FFCC00;
+        }
+
+        .game-details {
+            font-size: 0.9em;
+            color: #CCC;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            background: #28a745;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            margin: 10px;
+        }
+
+        .file-input-wrapper:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .save-section {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .save-input {
+            padding: 12px;
+            font-size: 1.1em;
+            border: 2px solid #FFCC00;
+            border-radius: 5px;
+            margin: 10px;
+            min-width: 300px;
+        }
+
         @media (max-width: 768px) {
             .categories, .amounts-grid {
                 grid-template-columns: repeat(3, 1fr);
@@ -417,6 +500,11 @@
             
             .answer-buttons {
                 grid-template-columns: 1fr;
+            }
+
+            .saved-game-item {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
     </style>
@@ -432,33 +520,14 @@
         </div>
 
         <!-- Hidden Audio Elements -->
-        <audio id="theme-music" loop preload="auto">
-            <!-- Using simple synthesized tones that work better in browsers -->
-        </audio>
+        <audio id="theme-music" loop preload="auto"></audio>
+        <audio id="question-select" preload="auto"></audio>
+        <audio id="correct-sound" preload="auto"></audio>
+        <audio id="incorrect-sound" preload="auto"></audio>
+        <audio id="final-jeopardy-music" loop preload="auto"></audio>
+        <audio id="buzzer-sound" preload="auto"></audio>
+        <audio id="applause-sound" preload="auto"></audio>
 
-        <audio id="question-select" preload="auto">
-            <!-- Simple click sound -->
-        </audio>
-
-        <audio id="correct-sound" preload="auto">
-            <!-- Success chime -->
-        </audio>
-
-        <audio id="incorrect-sound" preload="auto">
-            <!-- Buzzer sound -->
-        </audio>
-
-        <audio id="final-jeopardy-music" loop preload="auto">
-            <!-- Thinking music -->
-        </audio>
-
-        <audio id="buzzer-sound" preload="auto">
-            <!-- Wrong answer buzzer -->
-        </audio>
-
-        <audio id="applause-sound" preload="auto">
-            <!-- Celebration sound -->
-        </audio>
         <!-- Main Menu Screen -->
         <div id="main-menu-screen" class="screen active">
             <div class="setup-container">
@@ -475,14 +544,42 @@
                         CREATE CUSTOM QUESTIONS
                     </button>
                     <br>
-                    <button class="btn" id="play-custom-btn" style="margin: 10px; padding: 20px 40px; background: #FF8C00; color: white;">
-                        PLAY WITH CUSTOM QUESTIONS
+                    <button class="btn" id="load-custom-btn" style="margin: 10px; padding: 20px 40px; background: #FF8C00; color: white;">
+                        LOAD CUSTOM GAME
                     </button>
                 </div>
 
                 <div style="margin-top: 40px; font-size: 0.9em; color: #CCCCCC;">
                     <p><strong>Default:</strong> 25 pre-made Aerospace Ethics questions</p>
-                    <p><strong>Custom:</strong> Create your own questions for any subject!</p>
+                    <p><strong>Create:</strong> Create your own questions for any subject!</p>
+                    <p><strong>Load:</strong> Play with previously saved custom games!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Load Custom Game Screen -->
+        <div id="load-game-screen" class="screen">
+            <div class="setup-container">
+                <h1 class="title">LOAD CUSTOM GAME</h1>
+                <p class="subtitle">Select a previously saved game to play</p>
+                
+                <div class="saved-games-list" id="saved-games-list">
+                    <p>No saved games found. Upload a game file or create a new custom game first.</p>
+                </div>
+
+                <div style="margin: 30px 0;">
+                    <h3>Upload Game File:</h3>
+                    <label class="file-input-wrapper">
+                        <input type="file" id="game-file-input" accept=".json">
+                        📁 Browse for Game File
+                    </label>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn btn-primary" id="play-selected-game-btn" disabled>PLAY SELECTED GAME</button>
+                    <button class="btn btn-danger" id="delete-selected-game-btn" disabled>DELETE SELECTED GAME</button>
+                    <br>
+                    <button class="btn" id="back-to-menu-from-load-btn" style="background: #666; color: white;">BACK TO MENU</button>
                 </div>
             </div>
         </div>
@@ -550,6 +647,15 @@
                     </div>
                 </div>
 
+                <!-- Save Game Section -->
+                <div class="save-section">
+                    <h3>Save Your Custom Game:</h3>
+                    <input type="text" id="game-name-input" class="save-input" placeholder="Enter game name (e.g., 'History Quiz', 'Science Trivia')" maxlength="50">
+                    <input type="text" id="game-description-input" class="save-input" placeholder="Optional description" maxlength="100">
+                    <br>
+                    <button class="btn btn-primary" id="save-game-btn">💾 SAVE GAME TO FILE</button>
+                </div>
+
                 <div style="text-align: center;">
                     <button class="btn btn-primary" id="back-to-menu-btn">BACK TO MENU</button>
                     <button class="btn btn-success" id="finish-creating-btn">FINISH & PLAY GAME</button>
@@ -594,7 +700,8 @@
         <div id="board-screen" class="screen">
             <div class="game-header">
                 <div>
-                    <h1 class="title">AEROSPACE ETHICS JEOPARDY</h1>
+                    <h1 class="title">JEOPARDY</h1>
+                    <div id="game-title-display" style="color: #FFCC00; font-size: 1.2em; margin: 10px 0;"></div>
                     <div id="current-turn" class="current-player"></div>
                 </div>
                 <div class="scoreboard">
@@ -605,7 +712,7 @@
 
             <div class="board-container">
                 <div class="game-board">
-                    <div class="categories">
+                    <div class="categories" id="categories-display">
                         <div class="category-header">COST-CUTTING</div>
                         <div class="category-header">ETHICAL THEMES</div>
                         <div class="category-header">REGULATIONS</div>
@@ -623,7 +730,7 @@
             <div class="question-container">
                 <div class="question-main">
                     <div class="question-header">
-                        <h1 class="title">AEROSPACE ETHICS JEOPARDY</h1>
+                        <h1 class="title">JEOPARDY</h1>
                         <h2 id="question-category"></h2>
                         <h3 id="question-value"></h3>
                         <p id="question-selector"></p>
@@ -676,11 +783,11 @@
         <div id="final-question-screen" class="screen">
             <div class="final-jeopardy">
                 <h1 class="title">FINAL JEOPARDY!</h1>
-                <h2>Category: AVIATION ETHICS PHILOSOPHY</h2>
+                <h2 id="final-category-display">Category: AVIATION ETHICS PHILOSOPHY</h2>
                 
                 <div class="answer-box">
                     <h3>ANSWER:</h3>
-                    <p>This concept suggests that professional codes provide rules for circumstances without regulatory backing, but require consistent management behavior modeling for long-term effectiveness in transitioning decision-makers to higher ethical levels.</p>
+                    <p id="final-answer-text">This concept suggests that professional codes provide rules for circumstances without regulatory backing, but require consistent management behavior modeling for long-term effectiveness in transitioning decision-makers to higher ethical levels.</p>
                 </div>
 
                 <div id="final-show-section">
@@ -690,7 +797,7 @@
                 <div id="final-question-section" class="hidden">
                     <div class="question-box">
                         <h3>CORRECT QUESTION:</h3>
-                        <p>What is the fundamental purpose and limitation of professional codes of ethics in aviation?</p>
+                        <p id="final-question-text">What is the fundamental purpose and limitation of professional codes of ethics in aviation?</p>
                     </div>
 
                     <h3>Who answered correctly?</h3>
@@ -877,11 +984,16 @@
             usingCustomQuestions: false,
             creatorStep: 0,
             creatorCategory: 1,
-            creatorAmount: 100
+            creatorAmount: 100,
+            currentGameData: null,
+            currentGameTitle: 'Aerospace Ethics Jeopardy',
+            selectedSavedGame: null
         };
 
         // Custom Questions Storage
         let customQuestions = {
+            title: '',
+            description: '',
             categories: ['Category 1', 'Category 2', 'Category 3', 'Category 4', 'Category 5'],
             questions: {
                 1: { 100: null, 200: null, 300: null, 400: null, 500: null },
@@ -889,8 +1001,17 @@
                 3: { 100: null, 200: null, 300: null, 400: null, 500: null },
                 4: { 100: null, 200: null, 300: null, 400: null, 500: null },
                 5: { 100: null, 200: null, 300: null, 400: null, 500: null }
-            }
+            },
+            finalJeopardy: {
+                category: 'Final Category',
+                answer: 'Final answer goes here',
+                question: 'What is the final question?'
+            },
+            dateCreated: new Date().toISOString()
         };
+
+        // Saved Games Management
+        // Note: This is now handled by the SafeStorage class above
 
         const playerColors = [
             '#FF6464', '#64FF64', '#6464FF', '#FFFF64', '#FF64FF'
@@ -960,7 +1081,6 @@
                 this.volume = volume;
             }
             
-            // Generate sounds using Web Audio API
             playTone(frequency, duration, type = 'sine') {
                 if (!this.sfxEnabled || !this.audioContext) return;
                 
@@ -997,18 +1117,16 @@
                 if (!this.musicEnabled) return;
                 await this.initializeAudio();
                 
-                // Simple background "music" using repeating tones
                 const playMelody = () => {
                     if (!this.musicEnabled || !this.audioContext) return;
                     
-                    const notes = [261.63, 293.66, 329.63, 349.23, 392.00]; // C, D, E, F, G
+                    const notes = [261.63, 293.66, 329.63, 349.23, 392.00];
                     notes.forEach((note, index) => {
                         setTimeout(() => {
                             this.playTone(note, 0.5);
                         }, index * 600);
                     });
                     
-                    // Repeat melody
                     setTimeout(playMelody, 4000);
                 };
                 
@@ -1017,7 +1135,6 @@
             
             stopMusic() {
                 // For our simple system, we just disable music
-                // In a more complex system, we'd track and stop active oscillators
             }
             
             async playQuestionSelect() {
@@ -1027,13 +1144,11 @@
             
             async playCorrect() {
                 await this.initializeAudio();
-                // Happy ascending chord
-                this.playChord([261.63, 329.63, 392.00], 0.5); // C-E-G major chord
+                this.playChord([261.63, 329.63, 392.00], 0.5);
             }
             
             async playIncorrect() {
                 await this.initializeAudio();
-                // Descending buzzer sound
                 setTimeout(() => this.playTone(200, 0.3, 'square'), 0);
                 setTimeout(() => this.playTone(150, 0.3, 'square'), 100);
                 setTimeout(() => this.playTone(100, 0.5, 'square'), 200);
@@ -1043,7 +1158,6 @@
                 await this.initializeAudio();
                 if (!this.musicEnabled) return;
                 
-                // Dramatic thinking music pattern
                 const playDramaticMusic = () => {
                     if (!this.musicEnabled || !this.audioContext) return;
                     
@@ -1067,8 +1181,7 @@
             
             async playApplause() {
                 await this.initializeAudio();
-                // Celebratory ascending notes
-                const celebration = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                const celebration = [523.25, 659.25, 783.99, 1046.50];
                 celebration.forEach((note, index) => {
                     setTimeout(() => {
                         this.playTone(note, 0.3);
@@ -1080,11 +1193,316 @@
         // Initialize audio manager
         let audioManager;
 
+        // Safe Storage System (works in sandboxed environments)
+        class SafeStorage {
+            constructor() {
+                this.canUseLocalStorage = this.testLocalStorage();
+                this.memoryStorage = new Map();
+                
+                if (this.canUseLocalStorage) {
+                    this.loadFromLocalStorage();
+                }
+            }
+            
+            testLocalStorage() {
+                try {
+                    const test = 'localStorage-test';
+                    localStorage.setItem(test, test);
+                    localStorage.removeItem(test);
+                    return true;
+                } catch (e) {
+                    console.log('localStorage not available, using memory storage');
+                    return false;
+                }
+            }
+            
+            loadFromLocalStorage() {
+                try {
+                    const storedGames = localStorage.getItem('jeopardy-saved-games');
+                    if (storedGames) {
+                        const games = JSON.parse(storedGames);
+                        games.forEach((game, index) => {
+                            this.memoryStorage.set(`game-${index}`, game);
+                        });
+                    }
+                } catch (e) {
+                    console.log('Error loading from localStorage:', e);
+                }
+            }
+            
+            saveGame(game) {
+                const gameId = `game-${Date.now()}`;
+                this.memoryStorage.set(gameId, game);
+                
+                if (this.canUseLocalStorage) {
+                    try {
+                        const allGames = this.getAllGames();
+                        localStorage.setItem('jeopardy-saved-games', JSON.stringify(allGames));
+                    } catch (e) {
+                        console.log('Error saving to localStorage:', e);
+                    }
+                }
+                
+                return gameId;
+            }
+            
+            getAllGames() {
+                return Array.from(this.memoryStorage.values());
+            }
+            
+            getGame(gameId) {
+                return this.memoryStorage.get(gameId);
+            }
+            
+            deleteGame(gameId) {
+                this.memoryStorage.delete(gameId);
+                
+                if (this.canUseLocalStorage) {
+                    try {
+                        const allGames = this.getAllGames();
+                        localStorage.setItem('jeopardy-saved-games', JSON.stringify(allGames));
+                    } catch (e) {
+                        console.log('Error updating localStorage:', e);
+                    }
+                }
+            }
+            
+            clear() {
+                this.memoryStorage.clear();
+                
+                if (this.canUseLocalStorage) {
+                    try {
+                        localStorage.removeItem('jeopardy-saved-games');
+                    } catch (e) {
+                        console.log('Error clearing localStorage:', e);
+                    }
+                }
+            }
+        }
+
+        // Initialize storage system
+        let gameStorage = new SafeStorage();
+
+        // Save/Load Game Functions
+        function saveGameToFile() {
+            const gameName = document.getElementById('game-name-input').value.trim() || 'Custom Jeopardy Game';
+            const gameDescription = document.getElementById('game-description-input').value.trim() || 'Custom game created with Jeopardy maker';
+            
+            // Update custom questions with metadata
+            customQuestions.title = gameName;
+            customQuestions.description = gameDescription;
+            customQuestions.dateCreated = new Date().toISOString();
+            
+            // Create the game file
+            const gameFile = {
+                ...customQuestions,
+                version: '1.0',
+                type: 'jeopardy-game'
+            };
+            
+            // Save using our safe storage system
+            const gameId = gameStorage.saveGame(gameFile);
+            
+            // Also download as file
+            const dataStr = JSON.stringify(gameFile, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const downloadLink = document.createElement('a');
+            downloadLink.href = url;
+            downloadLink.download = `${gameName.replace(/[^a-z0-9]/gi, '_')}.json`;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            
+            const storageType = gameStorage.canUseLocalStorage ? 'downloaded and saved to your browser' : 'downloaded (browser storage not available in this environment)';
+            alert(`Game "${gameName}" saved successfully! The file has been ${storageType}.`);
+            
+            // Update the saved games list
+            loadSavedGamesList();
+        }
+        
+        function loadSavedGamesList() {
+            const savedGamesList = document.getElementById('saved-games-list');
+            
+            // Get all games from our safe storage
+            const allGames = gameStorage.getAllGames();
+            
+            if (allGames.length === 0) {
+                savedGamesList.innerHTML = `
+                    <p>No saved games found. Upload a game file or create a new custom game first.</p>
+                    ${!gameStorage.canUseLocalStorage ? '<p style="color: #FFA500; font-size: 0.9em;">Note: Browser storage is not available in this environment. Games will only persist during this session.</p>' : ''}
+                `;
+                return;
+            }
+            
+            savedGamesList.innerHTML = '';
+            
+            allGames.forEach((game, index) => {
+                const gameItem = document.createElement('div');
+                gameItem.className = 'saved-game-item';
+                gameItem.dataset.gameIndex = index;
+                
+                const dateStr = new Date(game.dateCreated).toLocaleDateString();
+                const questionsCount = countGameQuestions(game);
+                
+                gameItem.innerHTML = `
+                    <div class="game-info">
+                        <div class="game-title">${game.title}</div>
+                        <div class="game-details">${game.description}</div>
+                        <div class="game-details">Created: ${dateStr} | ${questionsCount}/25 questions</div>
+                    </div>
+                `;
+                
+                gameItem.addEventListener('click', () => selectSavedGame(index));
+                savedGamesList.appendChild(gameItem);
+            });
+            
+            // Add storage info if localStorage is not available
+            if (!gameStorage.canUseLocalStorage) {
+                const infoDiv = document.createElement('div');
+                infoDiv.style.cssText = 'background: rgba(255,165,0,0.2); padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 0.9em; color: #FFA500;';
+                infoDiv.innerHTML = '⚠️ Browser storage is limited in this environment. Games will only persist during this session. Use file download/upload for permanent storage.';
+                savedGamesList.appendChild(infoDiv);
+            }
+        }
+        
+        function countGameQuestions(game) {
+            let count = 0;
+            for (let cat = 1; cat <= 5; cat++) {
+                for (let amount of [100, 200, 300, 400, 500]) {
+                    if (game.questions[cat] && game.questions[cat][amount]) {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+        
+        function selectSavedGame(index) {
+            // Remove previous selection
+            document.querySelectorAll('.saved-game-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Select new game
+            const gameItem = document.querySelector(`[data-game-index="${index}"]`);
+            if (gameItem) {
+                gameItem.classList.add('selected');
+                gameState.selectedSavedGame = index;
+                
+                // Enable buttons
+                document.getElementById('play-selected-game-btn').disabled = false;
+                document.getElementById('delete-selected-game-btn').disabled = false;
+            }
+        }
+        
+        function playSelectedGame() {
+            if (gameState.selectedSavedGame === null) return;
+            
+            const allGames = gameStorage.getAllGames();
+            const selectedGame = allGames[gameState.selectedSavedGame];
+            if (!selectedGame) return;
+            
+            loadCustomGame(selectedGame);
+            
+            gameState.usingCustomQuestions = true;
+            gameState.currentGameTitle = selectedGame.title;
+            
+            showScreen('setup-screen');
+        }
+        
+        function deleteSelectedGame() {
+            if (gameState.selectedSavedGame === null) return;
+            
+            const allGames = gameStorage.getAllGames();
+            const selectedGame = allGames[gameState.selectedSavedGame];
+            if (!selectedGame) return;
+            
+            if (confirm(`Are you sure you want to delete "${selectedGame.title}"?`)) {
+                // Create a new array without the selected game
+                const updatedGames = allGames.filter((_, index) => index !== gameState.selectedSavedGame);
+                
+                // Clear storage and re-add all games except the deleted one
+                gameStorage.clear();
+                updatedGames.forEach(game => gameStorage.saveGame(game));
+                
+                gameState.selectedSavedGame = null;
+                document.getElementById('play-selected-game-btn').disabled = true;
+                document.getElementById('delete-selected-game-btn').disabled = true;
+                
+                loadSavedGamesList();
+            }
+        }
+        
+        function loadCustomGame(gameFile) {
+            // Load the game data into our custom questions structure
+            customQuestions = { ...gameFile };
+            
+            // Ensure all questions have 'used: false' property
+            for (let cat = 1; cat <= 5; cat++) {
+                for (let amount of [100, 200, 300, 400, 500]) {
+                    if (customQuestions.questions[cat] && customQuestions.questions[cat][amount]) {
+                        customQuestions.questions[cat][amount].used = false;
+                    }
+                }
+            }
+        }
+        
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const gameData = JSON.parse(e.target.result);
+                    
+                    // Validate game file structure
+                    if (!gameData.questions || !gameData.categories) {
+                        throw new Error('Invalid game file format');
+                    }
+                    
+                    // Check if game already exists
+                    const allGames = gameStorage.getAllGames();
+                    const existingIndex = allGames.findIndex(game => 
+                        game.title === gameData.title && 
+                        game.dateCreated === gameData.dateCreated
+                    );
+                    
+                    if (existingIndex === -1) {
+                        gameStorage.saveGame(gameData);
+                        loadSavedGamesList();
+                        alert(`Game "${gameData.title}" loaded successfully!`);
+                    } else {
+                        alert(`Game "${gameData.title}" already exists in your saved games.`);
+                    }
+                    
+                } catch (error) {
+                    alert('Error loading game file: ' + error.message);
+                }
+            };
+            
+            reader.readAsText(file);
+            
+            // Reset file input
+            event.target.value = '';
+        }
+
         // Event Listeners
         document.addEventListener('DOMContentLoaded', function() {
+            audioManager = new AudioManager();
+            
+            // Initialize storage system
+            gameStorage = new SafeStorage();
+            
+            // Load saved games on startup
+            loadSavedGamesList();
+            
             // Main menu
             document.getElementById('play-default-btn').addEventListener('click', function() {
                 gameState.usingCustomQuestions = false;
+                gameState.currentGameTitle = 'Aerospace Ethics Jeopardy';
                 showScreen('setup-screen');
             });
 
@@ -1093,24 +1511,30 @@
                 initializeCreator();
             });
 
-            document.getElementById('play-custom-btn').addEventListener('click', function() {
-                if (isCustomGameComplete()) {
-                    gameState.usingCustomQuestions = true;
-                    showScreen('setup-screen');
-                } else {
-                    alert('Please create all 25 custom questions first!');
-                }
+            document.getElementById('load-custom-btn').addEventListener('click', function() {
+                showScreen('load-game-screen');
+                loadSavedGamesList();
             });
+
+            // Load game screen
+            document.getElementById('play-selected-game-btn').addEventListener('click', playSelectedGame);
+            document.getElementById('delete-selected-game-btn').addEventListener('click', deleteSelectedGame);
+            document.getElementById('back-to-menu-from-load-btn').addEventListener('click', function() {
+                showScreen('main-menu-screen');
+            });
+            document.getElementById('game-file-input').addEventListener('change', handleFileUpload);
 
             // Question Creator
             document.getElementById('save-question-btn').addEventListener('click', saveCurrentQuestion);
             document.getElementById('skip-question-btn').addEventListener('click', skipCurrentQuestion);
+            document.getElementById('save-game-btn').addEventListener('click', saveGameToFile);
             document.getElementById('back-to-menu-btn').addEventListener('click', function() {
                 showScreen('main-menu-screen');
             });
             document.getElementById('finish-creating-btn').addEventListener('click', function() {
                 if (isCustomGameComplete()) {
                     gameState.usingCustomQuestions = true;
+                    gameState.currentGameTitle = customQuestions.title || 'Custom Jeopardy Game';
                     showScreen('setup-screen');
                 } else {
                     alert('Please complete all 25 questions before playing!');
@@ -1157,7 +1581,7 @@
                 }
             });
 
-            console.log('🛩️ Custom Jeopardy Game Loaded! ✈️');
+            console.log('🛩️ Enhanced Jeopardy Game Loaded! ✈️');
         });
 
         // Question Creator Functions
@@ -1165,6 +1589,27 @@
             gameState.creatorStep = 0;
             gameState.creatorCategory = 1;
             gameState.creatorAmount = 100;
+            
+            // Reset custom questions
+            customQuestions = {
+                title: '',
+                description: '',
+                categories: ['Category 1', 'Category 2', 'Category 3', 'Category 4', 'Category 5'],
+                questions: {
+                    1: { 100: null, 200: null, 300: null, 400: null, 500: null },
+                    2: { 100: null, 200: null, 300: null, 400: null, 500: null },
+                    3: { 100: null, 200: null, 300: null, 400: null, 500: null },
+                    4: { 100: null, 200: null, 300: null, 400: null, 500: null },
+                    5: { 100: null, 200: null, 300: null, 400: null, 500: null }
+                },
+                finalJeopardy: {
+                    category: 'Final Category',
+                    answer: 'Final answer goes here',
+                    question: 'What is the final question?'
+                },
+                dateCreated: new Date().toISOString()
+            };
+            
             updateCreatorDisplay();
         }
 
@@ -1245,8 +1690,8 @@
             
             // Check if we're done
             if (gameState.creatorStep >= 25) {
-                alert('All questions created! You can now play your custom game.');
-                showScreen('main-menu-screen');
+                alert('All questions created! You can now save your game and play it.');
+                // Stay on creator screen so they can save the game
             } else {
                 updateCreatorDisplay();
             }
@@ -1261,7 +1706,7 @@
                     }
                 }
             }
-            return totalQuestions === 25;
+            return totalQuestions >= 20; // Allow playing with at least 20 questions
         }
 
         function getGameData() {
@@ -1359,33 +1804,52 @@
             initializeBoard();
             updateScoreboard();
             updateCurrentTurn();
+            updateGameTitle();
+        }
+
+        function updateGameTitle() {
+            document.getElementById('game-title-display').textContent = gameState.currentGameTitle;
         }
 
         function initializeBoard() {
             const amountsGrid = document.getElementById('amounts-grid');
-            amountsGrid.innerHTML = '';
+            const categoriesDisplay = document.getElementById('categories-display');
             
-            const categories = Object.keys(gameData);
+            amountsGrid.innerHTML = '';
+            categoriesDisplay.innerHTML = '';
+            
+            const currentGameData = getGameData();
+            const categories = Object.keys(currentGameData);
             const amounts = [100, 200, 300, 400, 500];
             
+            // Update category headers
+            categories.forEach(category => {
+                const categoryHeader = document.createElement('div');
+                categoryHeader.className = 'category-header';
+                categoryHeader.textContent = category;
+                categoriesDisplay.appendChild(categoryHeader);
+            });
+            
+            // Create amount buttons
             amounts.forEach(amount => {
                 categories.forEach(category => {
                     const btn = document.createElement('button');
                     btn.className = 'amount-btn';
-                    btn.textContent = `$${amount}`;
+                    btn.textContent = `${amount}`;
                     btn.addEventListener('click', () => selectQuestion(category, amount));
-                    btn.id = `${category}-${amount}`;
+                    btn.id = `${category.replace(/\s+/g, '-')}-${amount}`;
                     amountsGrid.appendChild(btn);
                 });
             });
         }
 
         function selectQuestion(category, amount) {
-            if (gameData[category][amount].used) return;
+            const currentGameData = getGameData();
+            if (currentGameData[category][amount].used) return;
             
             gameState.currentCategory = category;
             gameState.currentAmount = amount;
-            gameState.currentQuestion = gameData[category][amount];
+            gameState.currentQuestion = currentGameData[category][amount];
             
             showScreen('question-screen');
             displayQuestion();
@@ -1393,7 +1857,7 @@
 
         function displayQuestion() {
             document.getElementById('question-category').textContent = `Category: ${gameState.currentCategory}`;
-            document.getElementById('question-value').textContent = `Value: $${gameState.currentAmount}`;
+            document.getElementById('question-value').textContent = `Value: ${gameState.currentAmount}`;
             document.getElementById('question-selector').textContent = `Selected by: ${gameState.players[gameState.questionSelector].name}`;
             document.getElementById('answer-text').textContent = gameState.currentQuestion.answer;
             
@@ -1441,7 +1905,8 @@
         }
 
         function updateQuestionUsed() {
-            const btn = document.getElementById(`${gameState.currentCategory}-${gameState.currentAmount}`);
+            const categoryForId = gameState.currentCategory.replace(/\s+/g, '-');
+            const btn = document.getElementById(`${categoryForId}-${gameState.currentAmount}`);
             btn.classList.add('used');
             btn.textContent = '---';
             btn.onclick = null;
@@ -1513,6 +1978,13 @@
             showScreen('final-question-screen');
             document.getElementById('final-show-section').classList.remove('hidden');
             document.getElementById('final-question-section').classList.add('hidden');
+            
+            // Update Final Jeopardy content if using custom questions
+            if (gameState.usingCustomQuestions && customQuestions.finalJeopardy) {
+                document.getElementById('final-category-display').textContent = `Category: ${customQuestions.finalJeopardy.category}`;
+                document.getElementById('final-answer-text').textContent = customQuestions.finalJeopardy.answer;
+                document.getElementById('final-question-text').textContent = customQuestions.finalJeopardy.question;
+            }
             
             const allWagers = document.getElementById('all-wagers');
             allWagers.innerHTML = '';
@@ -1650,14 +2122,33 @@
                 currentQuestion: null,
                 currentCategory: null,
                 currentAmount: 0,
-                finalJeopardyPlayer: 0
+                finalJeopardyPlayer: 0,
+                usingCustomQuestions: false,
+                creatorStep: 0,
+                creatorCategory: 1,
+                creatorAmount: 100,
+                currentGameData: null,
+                currentGameTitle: 'Aerospace Ethics Jeopardy',
+                selectedSavedGame: null
             };
             
+            // Reset default game data
             Object.keys(gameData).forEach(category => {
                 Object.keys(gameData[category]).forEach(amount => {
                     gameData[category][amount].used = false;
                 });
             });
+            
+            // Reset custom questions if they were being used
+            if (gameState.usingCustomQuestions) {
+                for (let cat = 1; cat <= 5; cat++) {
+                    for (let amount of [100, 200, 300, 400, 500]) {
+                        if (customQuestions.questions[cat][amount]) {
+                            customQuestions.questions[cat][amount].used = false;
+                        }
+                    }
+                }
+            }
             
             document.getElementById('player-count-section').classList.remove('hidden');
             document.getElementById('name-entry-section').classList.add('hidden');
@@ -1666,7 +2157,7 @@
             document.querySelectorAll('.count-btn').forEach(btn => btn.classList.remove('selected'));
             document.querySelectorAll('.count-btn')[2].classList.add('selected');
             
-            showScreen('setup-screen');
+            showScreen('main-menu-screen');
         }
 
         function quitGame() {
