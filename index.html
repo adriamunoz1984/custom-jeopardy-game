@@ -575,12 +575,13 @@
                     </label>
                 </div>
 
-                <div style="text-align: center; margin-top: 30px;">
-                    <button class="btn btn-primary" id="play-selected-game-btn" disabled>PLAY SELECTED GAME</button>
-                    <button class="btn btn-danger" id="delete-selected-game-btn" disabled>DELETE SELECTED GAME</button>
-                    <br>
-                    <button class="btn" id="back-to-menu-from-load-btn" style="background: #666; color: white;">BACK TO MENU</button>
-                </div>
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="btn btn-primary" id="play-selected-game-btn" disabled>PLAY SELECTED GAME</button>
+                        <button class="btn" id="edit-selected-game-btn" disabled style="background: #17a2b8; color: white;">✏️ EDIT SELECTED GAME</button>
+                        <button class="btn btn-danger" id="delete-selected-game-btn" disabled>DELETE SELECTED GAME</button>
+                        <br>
+                        <button class="btn" id="back-to-menu-from-load-btn" style="background: #666; color: white;">BACK TO MENU</button>
+                    </div>
             </div>
         </div>
 
@@ -590,17 +591,44 @@
                 <h1 class="title">CREATE CUSTOM QUESTIONS</h1>
                 <p class="subtitle">Build your own Jeopardy game!</p>
                 
-                <div style="background: rgba(255,255,255,0.1); padding: 30px; border-radius: 15px; margin: 20px 0;">
+                <!-- Category Setup Section -->
+                <div id="category-setup-section" style="background: rgba(255,255,255,0.1); padding: 30px; border-radius: 15px; margin: 20px 0;">
+                    <h3>Step 1: Set Up Your Categories</h3>
+                    <p>First, name your 5 categories. You can change these names later.</p>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin: 20px 0;">
+                        <div>
+                            <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #FFCC00;">Category 1:</label>
+                            <input type="text" id="category-1-input" class="save-input" placeholder="e.g., Science & Technology" value="Category 1">
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #FFCC00;">Category 2:</label>
+                            <input type="text" id="category-2-input" class="save-input" placeholder="e.g., World Geography" value="Category 2">
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #FFCC00;">Category 3:</label>
+                            <input type="text" id="category-3-input" class="save-input" placeholder="e.g., Entertainment & Movies" value="Category 3">
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #FFCC00;">Category 4:</label>
+                            <input type="text" id="category-4-input" class="save-input" placeholder="e.g., Sports & Recreation" value="Category 4">
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #FFCC00;">Category 5:</label>
+                            <input type="text" id="category-5-input" class="save-input" placeholder="e.g., History & Culture" value="Category 5">
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 20px 0;">
+                        <button class="btn btn-primary" id="save-categories-btn">SAVE CATEGORIES & START QUESTIONS</button>
+                    </div>
+                </div>
+
+                <!-- Question Creation Section -->
+                <div id="question-creation-section" class="hidden" style="background: rgba(255,255,255,0.1); padding: 30px; border-radius: 15px; margin: 20px 0;">
                     <h3>Question <span id="question-counter">1</span> of 25</h3>
                     <p>Category: <span id="current-category-display">Category 1</span> - $<span id="current-amount-display">100</span></p>
                     
-                    <div style="margin: 20px 0;">
-                        <label style="display: block; font-weight: bold; margin-bottom: 10px; color: #FFCC00;">
-                            Category Name (optional - rename "Category 1"):
-                        </label>
-                        <input type="text" id="category-name-input" style="width: 100%; padding: 12px; border: 2px solid #FFCC00; border-radius: 5px; font-size: 1em;" placeholder="e.g., History, Science, Sports...">
-                    </div>
-
                     <div style="margin: 20px 0;">
                         <label style="display: block; font-weight: bold; margin-bottom: 10px; color: #FFCC00;">
                             Answer (what contestants will see):
@@ -618,29 +646,30 @@
                     <div style="text-align: center; margin: 30px 0;">
                         <button class="btn btn-success" id="save-question-btn">SAVE & NEXT QUESTION</button>
                         <button class="btn" id="skip-question-btn" style="background: #FFA500; color: white;">SKIP THIS QUESTION</button>
+                        <button class="btn" id="edit-categories-btn" style="background: #17a2b8; color: white;">EDIT CATEGORIES</button>
                     </div>
 
                     <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin: 20px 0;">
                         <h4>Progress:</h4>
                         <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 10px;">
                             <div style="text-align: center;">
-                                <div style="font-weight: bold; color: #FFCC00;">Cat 1</div>
+                                <div style="font-weight: bold; color: #FFCC00;" id="progress-cat1-name">Cat 1</div>
                                 <div id="progress-cat1">0/5</div>
                             </div>
                             <div style="text-align: center;">
-                                <div style="font-weight: bold; color: #FFCC00;">Cat 2</div>
+                                <div style="font-weight: bold; color: #FFCC00;" id="progress-cat2-name">Cat 2</div>
                                 <div id="progress-cat2">0/5</div>
                             </div>
                             <div style="text-align: center;">
-                                <div style="font-weight: bold; color: #FFCC00;">Cat 3</div>
+                                <div style="font-weight: bold; color: #FFCC00;" id="progress-cat3-name">Cat 3</div>
                                 <div id="progress-cat3">0/5</div>
                             </div>
                             <div style="text-align: center;">
-                                <div style="font-weight: bold; color: #FFCC00;">Cat 4</div>
+                                <div style="font-weight: bold; color: #FFCC00;" id="progress-cat4-name">Cat 4</div>
                                 <div id="progress-cat4">0/5</div>
                             </div>
                             <div style="text-align: center;">
-                                <div style="font-weight: bold; color: #FFCC00;">Cat 5</div>
+                                <div style="font-weight: bold; color: #FFCC00;" id="progress-cat5-name">Cat 5</div>
                                 <div id="progress-cat5">0/5</div>
                             </div>
                         </div>
@@ -648,7 +677,7 @@
                 </div>
 
                 <!-- Save Game Section -->
-                <div class="save-section">
+                <div id="save-game-section" class="save-section hidden">
                     <h3>Save Your Custom Game:</h3>
                     <input type="text" id="game-name-input" class="save-input" placeholder="Enter game name (e.g., 'History Quiz', 'Science Trivia')" maxlength="50">
                     <input type="text" id="game-description-input" class="save-input" placeholder="Optional description" maxlength="100">
@@ -658,7 +687,7 @@
 
                 <div style="text-align: center;">
                     <button class="btn btn-primary" id="back-to-menu-btn">BACK TO MENU</button>
-                    <button class="btn btn-success" id="finish-creating-btn">FINISH & PLAY GAME</button>
+                    <button class="btn btn-success" id="finish-creating-btn" class="hidden">FINISH & PLAY GAME</button>
                 </div>
             </div>
         </div>
@@ -987,7 +1016,9 @@
             creatorAmount: 100,
             currentGameData: null,
             currentGameTitle: 'Aerospace Ethics Jeopardy',
-            selectedSavedGame: null
+            selectedSavedGame: null,
+            isEditing: false,
+            editingGameId: null
         };
 
         // Custom Questions Storage
@@ -1027,6 +1058,13 @@
                 this.isInitialized = false;
                 
                 this.setupControls();
+                
+                // Show audio info message
+                console.log('🎵 Audio System Info:');
+                console.log('• All sounds are generated using Web Audio API (no MP3 files needed)');
+                console.log('• Sounds include: theme music, correct/incorrect chimes, question select beeps');
+                console.log('• Audio works entirely in the browser using synthesized tones');
+                console.log('• No external files or links required - everything is code-generated!');
             }
             
             async initializeAudio() {
@@ -1035,7 +1073,7 @@
                 try {
                     this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
                     this.isInitialized = true;
-                    console.log('Audio initialized successfully!');
+                    console.log('🔊 Audio initialized successfully! Sounds are generated using Web Audio API.');
                 } catch (error) {
                     console.warn('Audio initialization failed:', error);
                 }
@@ -1283,15 +1321,236 @@
         // Initialize storage system
         let gameStorage = new SafeStorage();
 
+        // Question Creator Functions - Define these BEFORE event listeners
+        function saveCategories() {
+            console.log('saveCategories function called');
+            // Save category names
+            for (let i = 1; i <= 5; i++) {
+                const categoryInput = document.getElementById(`category-${i}-input`);
+                const categoryName = categoryInput.value.trim() || `Category ${i}`;
+                customQuestions.categories[i - 1] = categoryName;
+            }
+            
+            // Hide category setup, show question creation
+            document.getElementById('category-setup-section').classList.add('hidden');
+            document.getElementById('question-creation-section').classList.remove('hidden');
+            document.getElementById('save-game-section').classList.remove('hidden');
+            
+            // Update progress display with new category names
+            updateProgressDisplay();
+            updateCreatorDisplay();
+        }
+
+        function editCategories() {
+            console.log('editCategories function called');
+            // Show category setup again
+            document.getElementById('category-setup-section').classList.remove('hidden');
+            document.getElementById('question-creation-section').classList.add('hidden');
+            
+            // Pre-populate with current category names
+            for (let i = 1; i <= 5; i++) {
+                const categoryInput = document.getElementById(`category-${i}-input`);
+                categoryInput.value = customQuestions.categories[i - 1];
+            }
+        }
+
+        function initializeCreator(isEditing = false) {
+            gameState.creatorStep = 0;
+            gameState.creatorCategory = 1;
+            gameState.creatorAmount = 100;
+            
+            if (isEditing) {
+                // Pre-populate category inputs
+                for (let i = 1; i <= 5; i++) {
+                    const categoryInput = document.getElementById(`category-${i}-input`);
+                    categoryInput.value = customQuestions.categories[i - 1] || `Category ${i}`;
+                }
+                
+                // Show category section for editing
+                document.getElementById('category-setup-section').classList.remove('hidden');
+                document.getElementById('question-creation-section').classList.add('hidden');
+                document.getElementById('save-game-section').classList.add('hidden');
+                
+                // Update title for editing mode
+                document.querySelector('#creator-screen .title').textContent = 'EDIT CUSTOM GAME';
+                document.querySelector('#creator-screen .subtitle').textContent = `Editing: ${customQuestions.title}`;
+            } else {
+                // Reset for new game
+                resetCustomQuestions();
+                
+                // Show category setup first
+                document.getElementById('category-setup-section').classList.remove('hidden');
+                document.getElementById('question-creation-section').classList.add('hidden');
+                document.getElementById('save-game-section').classList.add('hidden');
+                
+                // Reset title
+                document.querySelector('#creator-screen .title').textContent = 'CREATE CUSTOM QUESTIONS';
+                document.querySelector('#creator-screen .subtitle').textContent = 'Build your own Jeopardy game!';
+                
+                // Reset category inputs
+                for (let i = 1; i <= 5; i++) {
+                    const categoryInput = document.getElementById(`category-${i}-input`);
+                    categoryInput.value = `Category ${i}`;
+                }
+            }
+        }
+
+        function resetCreatorState() {
+            gameState.isEditing = false;
+            gameState.editingGameId = null;
+            gameState.creatorStep = 0;
+            gameState.creatorCategory = 1;
+            gameState.creatorAmount = 100;
+        }
+
+        function resetCustomQuestions() {
+            customQuestions = {
+                title: '',
+                description: '',
+                categories: ['Category 1', 'Category 2', 'Category 3', 'Category 4', 'Category 5'],
+                questions: {
+                    1: { 100: null, 200: null, 300: null, 400: null, 500: null },
+                    2: { 100: null, 200: null, 300: null, 400: null, 500: null },
+                    3: { 100: null, 200: null, 300: null, 400: null, 500: null },
+                    4: { 100: null, 200: null, 300: null, 400: null, 500: null },
+                    5: { 100: null, 200: null, 300: null, 400: null, 500: null }
+                },
+                finalJeopardy: {
+                    category: 'Final Category',
+                    answer: 'Final answer goes here',
+                    question: 'What is the final question?'
+                },
+                dateCreated: new Date().toISOString()
+            };
+        }
+
+        function updateCreatorDisplay() {
+            const stepNumber = gameState.creatorStep + 1;
+            const categoryName = customQuestions.categories[gameState.creatorCategory - 1];
+            
+            document.getElementById('question-counter').textContent = stepNumber;
+            document.getElementById('current-category-display').textContent = categoryName;
+            document.getElementById('current-amount-display').textContent = gameState.creatorAmount;
+            
+            // Clear inputs
+            document.getElementById('answer-input').value = '';
+            document.getElementById('question-input').value = '';
+            
+            // If editing, pre-populate if question exists
+            if (gameState.isEditing) {
+                const existingQuestion = customQuestions.questions[gameState.creatorCategory][gameState.creatorAmount];
+                if (existingQuestion) {
+                    document.getElementById('answer-input').value = existingQuestion.answer || '';
+                    document.getElementById('question-input').value = existingQuestion.question || '';
+                }
+            }
+            
+            // Update progress display
+            updateProgressDisplay();
+            
+            // Focus on first input
+            document.getElementById('answer-input').focus();
+        }
+
+        function updateProgressDisplay() {
+            for (let cat = 1; cat <= 5; cat++) {
+                let completed = 0;
+                for (let amount of [100, 200, 300, 400, 500]) {
+                    if (customQuestions.questions[cat][amount]) {
+                        completed++;
+                    }
+                }
+                
+                // Update progress count
+                document.getElementById(`progress-cat${cat}`).textContent = `${completed}/5`;
+                
+                // Update category name in progress
+                const progressCatName = document.getElementById(`progress-cat${cat}-name`);
+                if (progressCatName) {
+                    const shortName = customQuestions.categories[cat - 1].length > 8 
+                        ? customQuestions.categories[cat - 1].substring(0, 8) + '...'
+                        : customQuestions.categories[cat - 1];
+                    progressCatName.textContent = shortName;
+                }
+            }
+        }
+
+        function saveCurrentQuestion() {
+            const answer = document.getElementById('answer-input').value.trim();
+            const question = document.getElementById('question-input').value.trim();
+            
+            if (!answer || !question) {
+                alert('Please fill in both the answer and question fields!');
+                return;
+            }
+            
+            // Save the question
+            customQuestions.questions[gameState.creatorCategory][gameState.creatorAmount] = {
+                answer: answer,
+                question: question,
+                used: false
+            };
+            
+            // Move to next question
+            nextCreatorStep();
+        }
+
+        function skipCurrentQuestion() {
+            // Just move to next without saving
+            nextCreatorStep();
+        }
+
+        function nextCreatorStep() {
+            gameState.creatorStep++;
+            
+            // Move to next amount
+            if (gameState.creatorAmount < 500) {
+                gameState.creatorAmount += 100;
+            } else {
+                // Move to next category
+                gameState.creatorAmount = 100;
+                gameState.creatorCategory++;
+            }
+            
+            // Check if we're done
+            if (gameState.creatorStep >= 25) {
+                if (gameState.isEditing) {
+                    alert('Game updated! You can now save your changes.');
+                } else {
+                    alert('All questions created! You can now save your game and play it.');
+                }
+                // Show finish button
+                document.getElementById('finish-creating-btn').classList.remove('hidden');
+            } else {
+                updateCreatorDisplay();
+            }
+        }
+
+        function isCustomGameComplete() {
+            let totalQuestions = 0;
+            for (let cat = 1; cat <= 5; cat++) {
+                for (let amount of [100, 200, 300, 400, 500]) {
+                    if (customQuestions.questions[cat][amount]) {
+                        totalQuestions++;
+                    }
+                }
+            }
+            return totalQuestions >= 20; // Allow playing with at least 20 questions
+        }
+
         // Save/Load Game Functions
         function saveGameToFile() {
-            const gameName = document.getElementById('game-name-input').value.trim() || 'Custom Jeopardy Game';
-            const gameDescription = document.getElementById('game-description-input').value.trim() || 'Custom game created with Jeopardy maker';
+            const gameName = document.getElementById('game-name-input').value.trim() || customQuestions.title || 'Custom Jeopardy Game';
+            const gameDescription = document.getElementById('game-description-input').value.trim() || customQuestions.description || 'Custom game created with Jeopardy maker';
             
             // Update custom questions with metadata
             customQuestions.title = gameName;
             customQuestions.description = gameDescription;
-            customQuestions.dateCreated = new Date().toISOString();
+            
+            // Only update creation date if not editing
+            if (!gameState.isEditing) {
+                customQuestions.dateCreated = new Date().toISOString();
+            }
             
             // Create the game file
             const gameFile = {
@@ -1300,8 +1559,23 @@
                 type: 'jeopardy-game'
             };
             
-            // Save using our safe storage system
-            const gameId = gameStorage.saveGame(gameFile);
+            if (gameState.isEditing) {
+                // Update existing game
+                const allGames = gameStorage.getAllGames();
+                const updatedGames = allGames.map((game, index) => 
+                    index === gameState.editingGameId ? gameFile : game
+                );
+                
+                // Clear storage and re-add updated games
+                gameStorage.clear();
+                updatedGames.forEach(game => gameStorage.saveGame(game));
+                
+                alert(`Game "${gameName}" updated successfully!`);
+            } else {
+                // Save new game
+                gameStorage.saveGame(gameFile);
+                alert(`Game "${gameName}" saved successfully!`);
+            }
             
             // Also download as file
             const dataStr = JSON.stringify(gameFile, null, 2);
@@ -1315,11 +1589,13 @@
             downloadLink.click();
             document.body.removeChild(downloadLink);
             
-            const storageType = gameStorage.canUseLocalStorage ? 'downloaded and saved to your browser' : 'downloaded (browser storage not available in this environment)';
-            alert(`Game "${gameName}" saved successfully! The file has been ${storageType}.`);
-            
             // Update the saved games list
             loadSavedGamesList();
+            
+            // If editing, reset state
+            if (gameState.isEditing) {
+                resetCreatorState();
+            }
         }
         
         function loadSavedGamesList() {
@@ -1393,6 +1669,7 @@
                 
                 // Enable buttons
                 document.getElementById('play-selected-game-btn').disabled = false;
+                document.getElementById('edit-selected-game-btn').disabled = false;
                 document.getElementById('delete-selected-game-btn').disabled = false;
             }
         }
@@ -1410,6 +1687,25 @@
             gameState.currentGameTitle = selectedGame.title;
             
             showScreen('setup-screen');
+        }
+
+        function editSelectedGame() {
+            if (gameState.selectedSavedGame === null) return;
+            
+            const allGames = gameStorage.getAllGames();
+            const selectedGame = allGames[gameState.selectedSavedGame];
+            if (!selectedGame) return;
+            
+            // Set editing mode
+            gameState.isEditing = true;
+            gameState.editingGameId = gameState.selectedSavedGame;
+            
+            // Load the game into the creator
+            loadCustomGame(selectedGame);
+            
+            // Go to creator screen
+            showScreen('creator-screen');
+            initializeCreator(true); // true = editing mode
         }
         
         function deleteSelectedGame() {
@@ -1429,6 +1725,7 @@
                 
                 gameState.selectedSavedGame = null;
                 document.getElementById('play-selected-game-btn').disabled = true;
+                document.getElementById('edit-selected-game-btn').disabled = true;
                 document.getElementById('delete-selected-game-btn').disabled = true;
                 
                 loadSavedGamesList();
@@ -1499,6 +1796,10 @@
             // Load saved games on startup
             loadSavedGamesList();
             
+            console.log('🔧 Setting up event listeners...');
+            console.log('saveCategories function exists:', typeof saveCategories);
+            console.log('editCategories function exists:', typeof editCategories);
+            
             // Main menu
             document.getElementById('play-default-btn').addEventListener('click', function() {
                 gameState.usingCustomQuestions = false;
@@ -1518,6 +1819,7 @@
 
             // Load game screen
             document.getElementById('play-selected-game-btn').addEventListener('click', playSelectedGame);
+            document.getElementById('edit-selected-game-btn').addEventListener('click', editSelectedGame);
             document.getElementById('delete-selected-game-btn').addEventListener('click', deleteSelectedGame);
             document.getElementById('back-to-menu-from-load-btn').addEventListener('click', function() {
                 showScreen('main-menu-screen');
@@ -1525,11 +1827,14 @@
             document.getElementById('game-file-input').addEventListener('change', handleFileUpload);
 
             // Question Creator
+            document.getElementById('save-categories-btn').addEventListener('click', saveCategories);
+            document.getElementById('edit-categories-btn').addEventListener('click', editCategories);
             document.getElementById('save-question-btn').addEventListener('click', saveCurrentQuestion);
             document.getElementById('skip-question-btn').addEventListener('click', skipCurrentQuestion);
             document.getElementById('save-game-btn').addEventListener('click', saveGameToFile);
             document.getElementById('back-to-menu-btn').addEventListener('click', function() {
                 showScreen('main-menu-screen');
+                resetCreatorState();
             });
             document.getElementById('finish-creating-btn').addEventListener('click', function() {
                 if (isCustomGameComplete()) {
@@ -1582,6 +1887,7 @@
             });
 
             console.log('🛩️ Enhanced Jeopardy Game Loaded! ✈️');
+            console.log('All functions loaded and ready!');
         });
 
         // Question Creator Functions

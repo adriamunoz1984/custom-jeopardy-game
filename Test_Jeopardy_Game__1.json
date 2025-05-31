@@ -1,0 +1,156 @@
+{
+  "title": "Test Jeopardy Game #1",
+  "description": "just a general taste of the game",
+  "categories": [
+    "WORLD GEOGRAPHY",
+    "SCIENCE & TECHNOLOGY",
+    "ENTERTAINMENT & MOVIES",
+    "SPORTS & RECREATION",
+    "HISTORY & CULTURE"
+  ],
+  "questions": {
+    "1": {
+      "100": {
+        "answer": "This African country is famous for its pyramids and the ancient city of Cairo, and the Nile River flows through it.",
+        "question": "What is Egypt?",
+        "used": false
+      },
+      "200": {
+        "answer": "This island nation in the Pacific is known for its unique wildlife, including kangaroos and koalas, and has Canberra as its capital.",
+        "question": "What is Australia?",
+        "used": false
+      },
+      "300": {
+        "answer": "This mountain range stretches across seven countries in South America and contains the highest peak outside of Asia.",
+        "question": "What are the Andes?",
+        "used": false
+      },
+      "400": {
+        "answer": "This European country is shaped like a boot and is famous for pasta, pizza, and the ancient Roman Empire.",
+        "question": "What is Italy?",
+        "used": false
+      },
+      "500": {
+        "answer": "This African river is the longest in the world, flowing over 4,000 miles from its source to the Mediterranean Sea.",
+        "question": "What is the Nile River?",
+        "used": false
+      }
+    },
+    "2": {
+      "100": {
+        "answer": "This programming language, created by Guido van Rossum, is named after a British comedy group and is known for its readability and simplicity.",
+        "question": "What is Python?",
+        "used": false
+      },
+      "200": {
+        "answer": "This force, discovered by Isaac Newton, explains why objects fall toward Earth and keeps planets in orbit around the Sun.",
+        "question": "What is gravity?",
+        "used": false
+      },
+      "300": {
+        "answer": "This element with the chemical symbol \"Au\" has been valued by humans for thousands of years and is used in jewelry and electronics.",
+        "question": "What is gold?",
+        "used": false
+      },
+      "400": {
+        "answer": "This social media platform, launched in 2004 by Mark Zuckerberg, was originally limited to college students before expanding worldwide.",
+        "question": "What is Facebook?",
+        "used": false
+      },
+      "500": {
+        "answer": "This theoretical physicist developed the theory of relativity and won the Nobel Prize in Physics in 1921 for his work on the photoelectric effect.",
+        "question": "Who is Albert Einstein?",
+        "used": false
+      }
+    },
+    "3": {
+      "100": {
+        "answer": "This 1997 film starring Leonardo DiCaprio and Kate Winslet became the highest-grossing film of all time until it was surpassed by Avatar.\nQuestion: What is Titanic?",
+        "question": "What is Titanic?",
+        "used": false
+      },
+      "200": {
+        "answer": "This streaming service, known for its red logo, started as a DVD-by-mail service before becoming a major producer of original content.\nQuestion: What is Netflix?",
+        "question": "What is Netflix?",
+        "used": false
+      },
+      "300": {
+        "answer": "This British rock band, fronted by Freddie Mercury, is known for hits like \"Bohemian Rhapsody\" and \"We Will Rock You.\"",
+        "question": "Who is Queen?",
+        "used": false
+      },
+      "400": {
+        "answer": "This HBO series, based on George R.R. Martin's novels, became a cultural phenomenon before its controversial final season in 2019.",
+        "question": "What is Game of Thrones?",
+        "used": false
+      },
+      "500": {
+        "answer": "This director is known for mind-bending films like \"Inception,\" \"Interstellar,\" and \"The Dark Knight\" trilogy.",
+        "question": "Who is Christopher Nolan?",
+        "used": false
+      }
+    },
+    "4": {
+      "100": {
+        "answer": "In this sport, players try to get a small white ball into holes using various clubs, and the goal is to have the lowest score.",
+        "question": "What is golf?",
+        "used": false
+      },
+      "200": {
+        "answer": "This annual championship game in American football is watched by over 100 million people and features expensive commercial advertisements.",
+        "question": "What is the Super Bowl?",
+        "used": false
+      },
+      "300": {
+        "answer": "This tennis tournament, held annually in England, is famous for its grass courts and tradition of players wearing all white.",
+        "question": "What is Wimbledon?",
+        "used": false
+      },
+      "400": {
+        "answer": "This basketball player, known as \"His Airness,\" won six NBA championships with the Chicago Bulls in the 1990s.",
+        "question": "Who is Michael Jordan?",
+        "used": false
+      },
+      "500": {
+        "answer": "This international soccer tournament, held every four years, brings together teams from around the world and is the most watched sporting event globally.",
+        "question": "What is the FIFA World Cup?",
+        "used": false
+      }
+    },
+    "5": {
+      "100": {
+        "answer": "This wall, built to separate East and West, fell in 1989 and marked the end of the Cold War division in this German city.",
+        "question": "What is the Berlin Wall?",
+        "used": false
+      },
+      "200": {
+        "answer": "This ancient wonder of the world, located in China, was built to protect against invasions and can be seen from space according to popular myth.",
+        "question": "What is the Great Wall of China?",
+        "used": false
+      },
+      "300": {
+        "answer": "This president issued the Emancipation Proclamation in 1863 and led the United States through the Civil War before his assassination.",
+        "question": "Who is Abraham Lincoln?",
+        "used": false
+      },
+      "400": {
+        "answer": "This ancient Greek philosopher taught Alexander the Great and founded the Lyceum school in Athens, writing extensively on ethics and politics.",
+        "question": "Who is Aristotle?",
+        "used": false
+      },
+      "500": {
+        "answer": "This 1969 event saw humans first set foot on another celestial body, with the famous words \"That's one small step for man, one giant leap for mankind.\"",
+        "question": "What is the Moon landing (Apollo 11)?",
+        "used": false
+      }
+    }
+  },
+  "finalJeopardy": {
+    "category": "Final Category",
+    "answer": "Final answer goes here",
+    "question": "What is the final question?"
+  },
+  "dateCreated": "2025-05-28T23:37:21.954Z",
+  "version": "1.0",
+  "type": "jeopardy-game"
+}
