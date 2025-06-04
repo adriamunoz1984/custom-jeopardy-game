@@ -1,0 +1,402 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #060CE9, #001572);
+    color: white;
+    min-height: 100vh;
+    overflow-x: auto;
+}
+
+/* Audio Controls */
+.audio-controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: rgba(0,0,0,0.7);
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.audio-btn {
+    background: #FFCC00;
+    color: black;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.3s;
+}
+
+.audio-btn:hover {
+    background: #FFD700;
+    transform: scale(1.05);
+}
+
+.audio-btn.muted {
+    background: #666;
+    color: white;
+}
+
+.volume-slider {
+    width: 80px;
+    height: 5px;
+    background: #333;
+    border-radius: 5px;
+    outline: none;
+    cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    background: #FFCC00;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.pulse-animation {
+    animation: pulse 0.6s ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.correct-flash {
+    animation: correctFlash 1s ease-in-out;
+}
+
+@keyframes correctFlash {
+    0% { background-color: rgba(0,255,0,0); }
+    50% { background-color: rgba(0,255,0,0.3); }
+    100% { background-color: rgba(0,255,0,0); }
+}
+
+.incorrect-flash {
+    animation: incorrectFlash 1s ease-in-out;
+}
+
+@keyframes incorrectFlash {
+    0% { background-color: rgba(255,0,0,0); }
+    50% { background-color: rgba(255,0,0,0.3); }
+    100% { background-color: rgba(255,0,0,0); }
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.screen {
+    display: none;
+    min-height: 80vh;
+}
+
+.screen.active {
+    display: block;
+}
+
+.title {
+    text-align: center;
+    font-size: 2.5em;
+    color: #FFCC00;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+
+.setup-container {
+    text-align: center;
+    padding: 40px;
+}
+
+.player-count-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.count-btn {
+    padding: 15px 25px;
+    font-size: 1.5em;
+    border: 3px solid #FFCC00;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+
+.count-btn.selected, .count-btn:hover {
+    background: #FFCC00;
+    color: black;
+}
+
+.input-section {
+    margin: 30px 0;
+}
+
+.player-input {
+    padding: 15px;
+    font-size: 1.2em;
+    border: 2px solid #FFCC00;
+    border-radius: 5px;
+    margin: 10px;
+    text-align: center;
+}
+
+.player-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.color-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.current-player {
+    font-size: 1.2em;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background: rgba(255,255,255,0.1);
+}
+
+.scoreboard {
+    background: rgba(255,255,255,0.9);
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    min-width: 250px;
+}
+
+.player-score {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+.player-score.active {
+    background: #FFCC00;
+}
+
+.board-container {
+    display: flex;
+    gap: 20px;
+}
+
+.game-board {
+    flex: 1;
+}
+
+.categories {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.category-header {
+    background: #FFCC00;
+    color: black;
+    padding: 15px 5px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.9em;
+    border: 2px solid black;
+}
+
+.amounts-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+}
+
+.amount-btn {
+    background: #060CE9;
+    color: #FFCC00;
+    border: 2px solid black;
+    padding: 20px;
+    font-size: 1.5em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.amount-btn:hover {
+    background: #FFCC00;
+    color: black;
+}
+
+.amount-btn.used {
+    background: #666;
+    color: #333;
+    cursor: not-allowed;
+}
+
+.question-container {
+    display: flex;
+    gap: 20px;
+}
+
+.question-main {
+    flex: 1;
+}
+
+.question-header {
+    margin-bottom: 20px;
+}
+
+.answer-box, .question-box {
+    background: white;
+    color: black;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+    border: 3px solid black;
+}
+
+.question-box {
+    background: #FFCC00;
+}
+
+.answer-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.player-btn {
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.player-btn:hover {
+    transform: scale(1.05);
+}
+
+.final-jeopardy {
+    text-align: center;
+    padding: 40px;
+}
+
+.wager-input {
+    padding: 15px;
+    font-size: 1.5em;
+    text-align: center;
+    border: 3px solid #FFCC00;
+    border-radius: 10px;
+    margin: 20px;
+}
+
+.wager-info {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.results {
+    text-align: center;
+    padding: 40px;
+}
+
+.winner {
+    font-size: 2em;
+    color: #FFCC00;
+    margin: 30px 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.final-scores {
+    background: rgba(255,255,255,0.1);
+    padding: 30px;
+    border-radius: 15px;
+    margin: 30px auto;
+    max-width: 500px;
+}
+
+.score-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 15px 0;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.btn {
+    padding: 15px 30px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin: 10px;
+}
+
+.btn-primary {
+    background: #FFCC00;
+    color: black;
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* New styles
