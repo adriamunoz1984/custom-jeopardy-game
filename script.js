@@ -336,6 +336,10 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('add-player-btn').addEventListener('click', addPlayer);
     document.getElementById('start-game-btn').addEventListener('click', startGame);
 
+    // Game control buttons
+    document.getElementById('reset-game-btn').addEventListener('click', resetCurrentGame);
+    document.getElementById('back-to-home-btn').addEventListener('click', backToHome);
+
     // Question screen buttons
     document.getElementById('show-question-btn').addEventListener('click', showQuestion);
     document.getElementById('nobody-correct-btn').addEventListener('click', nobodyCorrect);
@@ -767,6 +771,98 @@ function updateQuestionsRemaining() {
 }
 
 // Reset Functions
+function resetCurrentGame() {
+    if (confirm('Are you sure you want to reset the current game? All progress will be lost.')) {
+        // Reset player scores
+        gameState.players.forEach(player => {
+            player.score = 0;
+            player.finalJeopardyWager = 0;
+            player.hasWagered = false;
+        });
+        
+        // Reset game state
+        gameState.currentPlayer = 0;
+        gameState.questionSelector = 0;
+        gameState.questionsAnswered = 0;
+        gameState.finalJeopardyPlayer = 0;
+        gameState.currentQuestion = null;
+        gameState.currentCategory = null;
+        gameState.currentAmount = 0;
+        
+        // Reset question usage
+        if (gameState.usingCustomQuestions) {
+            // Reset custom questions
+            for (let cat = 1; cat <= 5; cat++) {
+                for (let amount of [100, 200, 300, 400, 500]) {
+                    if (customQuestions.questions[cat][amount]) {
+                        customQuestions.questions[cat][amount].used = false;
+                    }
+                }
+            }
+        } else {
+            // Reset default game data
+            Object.keys(gameData).forEach(category => {
+                Object.keys(gameData[category]).forEach(amount => {
+                    gameData[category][amount].used = false;
+                });
+            });
+        }
+        
+        // Reinitialize the board
+        initializeBoard();
+        updateScoreboard();
+        updateCurrentTurn();
+        updateQuestionsRemaining();
+        
+        alert('Game has been reset! Start fresh with the same players.');
+    }
+}
+
+function backToHome() {
+    if (confirm('Are you sure you want to return to the main menu? All game progress will be lost.')) {
+        // Complete reset of everything
+        gameState = {
+            players: [],
+            currentPlayer: 0,
+            questionSelector: 0,
+            questionsAnswered: 0,
+            totalQuestions: 25,
+            numPlayers: 4,
+            setupStep: 0,
+            currentQuestion: null,
+            currentCategory: null,
+            currentAmount: 0,
+            finalJeopardyPlayer: 0,
+            usingCustomQuestions: false,
+            creatorStep: 0,
+            creatorCategory: 1,
+            creatorAmount: 100,
+            currentGameData: null,
+            currentGameTitle: 'Aerospace Ethics Jeopardy',
+            selectedSavedGame: null,
+            isEditing: false,
+            editingGameId: null
+        };
+        
+        // Reset all game data
+        Object.keys(gameData).forEach(category => {
+            Object.keys(gameData[category]).forEach(amount => {
+                gameData[category][amount].used = false;
+            });
+        });
+        
+        // Reset UI elements
+        document.getElementById('player-count-section').classList.remove('hidden');
+        document.getElementById('name-entry-section').classList.add('hidden');
+        document.getElementById('players-summary').classList.add('hidden');
+        
+        document.querySelectorAll('.count-btn').forEach(btn => btn.classList.remove('selected'));
+        document.querySelectorAll('.count-btn')[2].classList.add('selected'); // Default to 4 players
+        
+        showScreen('main-menu-screen');
+    }
+}
+
 function playAgain() {
     gameState = {
         players: [],
